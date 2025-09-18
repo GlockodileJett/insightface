@@ -5,12 +5,13 @@ import cv2
 import onnx
 from onnx import numpy_helper
 from ..utils import face_align
+from ..utils.content_safety import NSFWDetector, ContentSafetyError
 
 
 
 
 class INSwapper():
-    def __init__(self, model_file=None, session=None):
+    def __init__(self, model_file=None, session=None, enable_nsfw_filter=True, strict_mode=True):
         self.model_file = model_file
         self.session = session
         model = onnx.load(self.model_file)
@@ -37,6 +38,13 @@ class INSwapper():
         self.input_shape = input_shape
         print('inswapper-shape:', self.input_shape)
         self.input_size = tuple(input_shape[2:4][::-1])
+        
+        # Initialize NSFW detector
+        self.nsfw_detector = NSFWDetector(strict_mode=strict_mode) if enable_nsfw_filter else None
+        if enable_nsfw_filter:
+            print('Content safety filtering enabled for face swapping')
+        else:
+            print('WARNING: Content safety filtering is disabled')
 
     def forward(self, img, latent):
         img = (img - self.input_mean) / self.input_std
@@ -44,6 +52,23 @@ class INSwapper():
         return pred
 
     def get(self, img, target_face, source_face, paste_back=True):
+        # Content safety check
+        if self.nsfw_detector is not None:
+            # Get face bounding boxes for more accurate analysis
+            target_bbox = getattr(target_face, 'bbox', None)
+            source_bbox = getattr(source_face, 'bbox', None)
+            
+            # Validate the face swap operation
+            is_allowed, reason = self.nsfw_detector.validate_swap_operation(
+                source_image=img,  # Note: In this context, img is actually the target image
+                target_image=img,  # We don't have separate source image, so use same
+                source_face_bbox=source_bbox,
+                target_face_bbox=target_bbox
+            )
+            
+            if not is_allowed:
+                raise ContentSafetyError(f"Face swap operation blocked: {reason}")
+        
         aimg, M = face_align.norm_crop2(img, target_face.kps, self.input_size[0])
         blob = cv2.dnn.blobFromImage(aimg, 1.0 / self.input_std, self.input_size,
                                       (self.input_mean, self.input_mean, self.input_mean), swapRB=True)

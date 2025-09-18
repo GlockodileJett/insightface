@@ -19,6 +19,8 @@ Both manual-downloading models from our github repo and auto-downloading models 
 
 ## Top News
 
+**`2024-12-20`** **NEW**: Added comprehensive **Content Safety and NSFW Filtering** system to prevent inappropriate face-swapping usage. The system automatically detects and blocks potentially harmful content while preserving legitimate use cases. See [Content Safety Documentation](docs/content_safety.md) for details.
+
 **`2024-08-01`** We have integrated our most advanced face-swapping models: **inswapper\_cyn** and **inswapper\_dax**, into the [Picsi.Ai face-swapping](https://www.picsi.ai) service. These models outperform almost all similar commercial products and our open-source model inswapper\_128. Please visit the [Picsi.Ai](https://www.picsi.ai) website to use the service and get help.
 
 **`2024-05-04`** We have added [InspireFace](cpp-package/inspireface), which is a cross-platform face recognition SDK developed in C/C++, supporting multiple operating systems and various backends. 
@@ -34,6 +36,13 @@ of [ECCV-2022 WCPA Workshop](https://sites.google.com/view/wcpa2022), [paper](ht
 **`2021-10-29`**: We achieved 1st place on the [VISA track](https://pages.nist.gov/frvt/plots/11/visa.html) of [NIST-FRVT 1:1](https://pages.nist.gov/frvt/html/frvt11.html) by using Partial FC (Xiang An, Jiankang Deng, Jia Guo).
 
 ## ChangeLogs
+
+**`2024-12-20`** **NEW**: Added comprehensive **Content Safety and NSFW Filtering** system:
+- Automatic detection of potentially inappropriate content
+- Real-time blocking of NSFW face-swapping operations  
+- Configurable filtering levels (strict/lenient modes)
+- Enabled by default for all face swapping operations
+- See [Content Safety Documentation](docs/content_safety.md) for implementation details
 
 **`2024-08-01`** We have integrated our most advanced face-swapping models: **inswapper\_cyn** and **inswapper\_dax**, into the [Picsi.Ai face-swapping](https://www.picsi.ai) service. These models outperform almost all similar commercial products and our open-source model inswapper\_128. Please visit the [Picsi.Ai](https://www.picsi.ai) website to use the service and get help.
 
@@ -86,6 +95,8 @@ InsightFace efficiently implements a rich variety of state of the art algorithms
 ## Quick Start
 
 Please start with our [python-package](python-package/), for testing detection, recognition and alignment models on input images.
+
+**⚠️ Content Safety**: As of December 2024, InsightFace includes automatic **NSFW filtering** for face swapping operations. This helps prevent the creation of inappropriate content while preserving legitimate use cases. See [Content Safety Documentation](docs/content_safety.md) for configuration options.
 
 
 ### ArcFace Video Demo

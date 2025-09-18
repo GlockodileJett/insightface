@@ -18,4 +18,8 @@ from . import utils
 from . import app
 from . import data
 from . import thirdparty
+from .utils.content_safety import ContentSafetyError
+
+# Expose ContentSafetyError at package level for easy access
+__all__ = ['model_zoo', 'utils', 'app', 'data', 'thirdparty', 'ContentSafetyError']
 
